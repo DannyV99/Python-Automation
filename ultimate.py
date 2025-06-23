@@ -25,13 +25,12 @@ def generate_script(package_name, direction, html_file="index.html", output_scri
     for a in soup.find_all("a"):
         href = a.get("href", "")
         if "../../packages/" in href and package_name_underscore in href:
-            parts = href.strip().split("/")
-            # Expected href format parts:
-            # ['..', '..', 'packages', 'xx', 'yy', 'hash', 'filename']
-            if len(parts) >= 7:
-                xx = parts[3]
-                yy = parts[4]
-                full_hash = parts[5]
+            # Remove the leading ../../
+            clean_href = href.replace("../../packages/", "")
+            parts = clean_href.strip().split("/")
+
+            if len(parts) >= 4:
+                xx, yy, full_hash = parts[0], parts[1], parts[2]
 
                 if full_hash not in seen:
                     seen.add(full_hash)
@@ -39,7 +38,7 @@ def generate_script(package_name, direction, html_file="index.html", output_scri
                     if direction == "send":
                         src = f"~/pypi/packages/{full_hash}/"
                         dest = f"/srv/pypi/web/packages/{xx}/{yy}/"
-                    else:  # receive
+                    else:
                         src = f"/srv/pypi/web/packages/{xx}/{yy}/{full_hash}/"
                         dest = "~/pypi/packages"
 
@@ -50,11 +49,9 @@ def generate_script(package_name, direction, html_file="index.html", output_scri
         sys.exit(1)
 
     # Add footer
+    scp_lines.append('echo "Copying pypi packages complete."')
     if direction == "send":
-        scp_lines.append('echo "Copying pypi packages complete."')
         scp_lines.append('echo "Remember to edit the /srv/pypi/web/index.html and add the line for the new package"')
-    else:
-        scp_lines.append('echo "Copying pypi packages complete."')
 
     scp_lines.append("exit")
 
@@ -86,4 +83,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
