@@ -1,0 +1,84 @@
+# ===========================
+# Automation Controller Nodes
+# ===========================
+[automationcontroller]
+servera.yourdomain.com node_type=hybrid
+serverb.yourdomain.com node_type=hybrid
+serverc.yourdomain.com node_type=hybrid
+
+[automationcontroller:vars]
+peers=execution_nodes
+
+# =====================
+# Execution Nodes (none)
+# =====================
+[execution_nodes]
+
+# ====================
+# Automation Hub Node
+# ====================
+[automationhub]
+serverd.yourdomain.com
+
+# =============================
+# Automation EDA Controller (optional)
+# =============================
+[automationedacontroller]
+
+# ====================
+# External PostgreSQL
+# ====================
+[database]
+servere.yourdomain.com
+
+# ============
+# SSO (none)
+# ============
+[sso]
+
+# ========================
+# Load Balancer (external)
+# ========================
+[loadbalancer]
+serverf.yourdomain.com
+
+# ======================
+# Global Variables Block
+# ======================
+[all:vars]
+
+admin_password='YourAdminPassword'
+
+# PostgreSQL settings for Controller
+pg_host=servere.yourdomain.com
+pg_port=5432
+pg_database='awx'
+pg_username='awx'
+pg_password='YourPostgresPassword'
+pg_sslmode='prefer'
+
+# Receptor settings
+receptor_listener_port=27199
+
+# Red Hat registry credentials
+registry_url='registry.redhat.io'
+registry_username='your_registry_user'
+registry_password='your_registry_password'
+# ee_from_hub_only = True  # Optional
+
+# Automation Hub DB settings
+automationhub_admin_password='YourHubAdminPassword'
+automationhub_pg_host=servere.yourdomain.com
+automationhub_pg_port=5432
+automationhub_pg_database='automationhub'
+automationhub_pg_username='automationhub'
+automationhub_pg_password='YourHubDBPassword'
+automationhub_pg_sslmode='prefer'
+
+# SSO Keystore if you are enabling SSO
+sso_keystore_password=''
+sso_console_admin_password=''
+
+# Optional: redirect traffic to the controller through LB
+controller_hostname=https://serverf.yourdomain.com
+automationhub_main_url=https://serverf.yourdomain.com
